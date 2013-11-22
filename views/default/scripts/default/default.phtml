@@ -1,0 +1,16 @@
+<!-- default view script -->
+
+<h1><?php echo $this->getValue('testval'); ?></h1>
+<p>
+	<!-- echo language-aware content using the t() function, and add each content string to a language file in /assets/languages: -->
+    <?php echo $this->t('The following line is translated'); ?>.
+</p>
+<p>
+	Non-translated content here.
+</p>
+<p>
+	Any PHP or HTML can be placed within view scripts.
+</p>
+
+<?php echo $this->render('default/_footer.phtml'); ?>
+<!-- /default view script -->
