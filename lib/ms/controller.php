@@ -33,8 +33,8 @@ abstract class MsController {
 	 public function forward(&$viewObject, $action, $controller='') {
 		 if ($controller == '') {
 			// forward to action of the current controller
-			eval('$this->' . $action . 'Action($viewObject);');
 			$viewObject->setViewScript( MS_PATH_BASE . DS .'views'. DS . MS_MODULE . DS . 'scripts' . DS . $viewObject->getControllerName() . DS . $action . '.phtml'); // reset the view script
+			eval('$this->' . $action . 'Action($viewObject);');
 		 } else {
 			// forward to action of a different controller 
 			$newController = strtolower($controller);
@@ -45,9 +45,11 @@ abstract class MsController {
 			
 			require_once ( MS_PATH_BASE . DS .'controllers'. DS . MS_MODULE . DS . $newController . '.php' );
 			eval('$controllerObject = new ' . ucfirst($newController) . 'Controller($this->config, $this->params);'); // instantiate controller object
+	
+			$viewObject->setViewScript( MS_PATH_BASE . DS .'views'. DS . MS_MODULE . DS . 'scripts' . DS . $newController . DS . $action . '.phtml'); // reset the view script
+			
 			// perform controller action
 			$actionMethod = $action . 'Action';
-			$viewObject->setViewScript( MS_PATH_BASE . DS .'views'. DS . MS_MODULE . DS . 'scripts' . DS . $newController . DS . $action . '.phtml'); // reset the view script
 			$controllerObject->$actionMethod($viewObject);
 			
 		 }
