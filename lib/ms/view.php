@@ -130,7 +130,7 @@ class MsView {
 		if (file_exists( MS_PATH_BASE . DS . 'assets' . DS . 'languages' . DS . $langCode . '_' . MS_MODULE . '_' . $this->controllerName . '.php' ))
 			include(MS_PATH_BASE . DS . 'assets' . DS . 'languages' . DS . $langCode . '_' . MS_MODULE . '_' . $this->controllerName . '.php');
 			
-		if (is_array($controllerLangValues)) $this->langValues = array_merge($langValues, $controllerLangValues);
+		if ((isset($controllerLangValues)) && (is_array($controllerLangValues))) $this->langValues = array_merge($langValues, $controllerLangValues);
 			else $this->langValues = $langValues;
 	 }
 	 
