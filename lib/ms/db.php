@@ -180,7 +180,7 @@ class MsDb
 		$where = '';
 		if (($where_in) && (is_array($where_in))) {
 			foreach ($where_in as $this_column => $where_details) {
-				if ($where_details['conj']) $conj = $where_details['conj'];
+				if (array_key_exists('conj', $where_details)) $conj = $where_details['conj'];
 					else $conj = 'AND';
 				if ($where != '') $where .= ' ' . $conj . ' ';
 					else $where = ' WHERE ';
