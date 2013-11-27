@@ -48,6 +48,11 @@ foreach ($url as $this_param) {
 foreach ($_REQUEST as $key => $val) {
 	$params[$key] = $val;	
 }
+if ($ms_config['addCookiesToParams']) {
+	foreach ($_COOKIE as $key => $val) {
+		$params[$key] = $val;	
+	}
+}
 
 $params['domain'] = str_replace('www.', '', $_SERVER['HTTP_HOST']);	// Remove 'www' from domain i.e. mysite.com, or m.mysite.com instead of www.mysite.com or www.m.mysite.com
 

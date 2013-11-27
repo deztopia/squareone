@@ -9,6 +9,9 @@
  
  // variable settings array
  $ms_config = array(
+	// Add cookies to the parameter array that gets passed to each controller
+	'addCookiesToParams' => true,
+	
  	// Default Branding
 	'productName' => 'MyApp',
 	'productLogo' => '/assets/images/front/wedshare_logo.png',
