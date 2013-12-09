@@ -414,6 +414,38 @@ abstract class MsModel {
 		$this->columnValues = $values;
 	}
 	
+	
+	/**
+	  * Delete.
+	  *
+	  * Deletes this model's database entry.
+	  *
+	  * @return bool
+	  *
+	  */
+	public function delete()
+	{
+		if ($this->isValid()) {
+			if (!is_array($this->pk)) return false; // if a primary key isn't specified, we can't delete
+			
+			// build where clause to delete based on primary key for this model
+			$where = array();
+			foreach ($this->pk as $keyName) {
+				if ($this->getValue($keyName) == NULL) return false; // if a primary key isn't set, we can't delete
+				$where[$keyName] = array('value' => $this->getValue($keyName), 'operator' => '=');
+			}	
+			
+			$query = MsDb::formatDeleteQuery($this->dbTable, $where);
+			$result = $this->db->query($query);
+	
+			// clear any update flags, as we won't need to update a deleted model
+			$this->changedColumns = array();
+			
+			//TO-DO: Return true only if the appropriate number of rows were deleted
+			return true;
+		}
+	}
+	
 	  
 	/**
 	  * Set - Data Setter.

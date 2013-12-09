@@ -117,6 +117,9 @@ class MyAppViewstorageitem extends MsModel {
 	// Database
 	public $dbTable = 'viewstorage'; // corresponding tablename
 	
+	// Primary Key
+	protected $pk = array('keyname');
+	
 	// Columns
 	public $columns = 'keyname,value'; // columns to use for this instance (overrides parent class, which specifies '*')
 	

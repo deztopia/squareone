@@ -9,6 +9,9 @@ class MyappViewer extends MsModel {
 	// Database
 	public $dbTable = 'viewer'; // corresponding tablename
 	
+	// Primary Key
+	protected $pk = array('id');
+	
 	// Columns
 	public $columns = 'id,first,last,pass,email,pic_filename'; // columns to use for this instance (overrides parent class, which specifies '*')
 	

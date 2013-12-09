@@ -200,6 +200,48 @@ class MsDb
 			
 		return trim('SELECT ' . $columns . ' FROM ' . $table . $innerjoin . $leftjoin . $where . $orderby);
 	}
+	
+	
+	/**
+	 * Format Delete Query.
+	 * 
+	 * @param string $table Name of table from which to delete.
+	 * @param mixed[] $where_in Associative array of where criteria i.e.: array('id' => array('value' => '123', 'operator' => '=')) or: array('name' => array('value' => '%john%', 'operator' => 'like', 'conj' => 'OR')).
+	 * @param int $limit_in (Optional). Limit the number of entries to delete. Default is 1. A value of 0 removes any limit imposition.
+	 *
+	 * @return void
+	 */
+	public function formatDeleteQuery($table_in, $where_in, $limit_in=1) {
+		// table
+		if (is_array($table_in)) {
+			foreach ($table_in as $tableLabel => $tableName) {
+				if ($table != '') $table .= ',';
+				$table .= '`' . $tableName . '` AS ' . $tableLabel;
+			}
+		} else {
+			$table = '`' . $table_in . '`';
+		}
+		
+		// where clause
+		$where = '';
+		if (($where_in) && (is_array($where_in))) {
+			foreach ($where_in as $this_column => $where_details) {
+				if (array_key_exists('conj', $where_details)) $conj = $where_details['conj'];
+					else $conj = 'AND';
+				if ($where != '') $where .= ' ' . $conj . ' ';
+					else $where = ' WHERE ';
+				if ($where_details['value'] !== NULL) $where .= trim($this_column) . ' ' . trim($where_details['operator']) . ' \'' . trim($where_details['value']) . '\'';
+					else $where .= trim($this_column) . ' ' . trim($where_details['operator']) . ' ' . trim($where_details['column']);
+			}
+		}
+		
+		// limit clause
+		if ($limit_in > 0) $limit = ' LIMIT ' . $limit_in;
+			else $limit = '';
+		
+		// format query
+		return trim('DELETE FROM ' . $table . $where . $limit);
+	}
 }
 
 
