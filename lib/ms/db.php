@@ -157,11 +157,12 @@ class MsDb
 	 * @param mixed[] $orderby_in (Optional) one or more columns to sort on. i.e.: array('last', 'first') or: array('id').
 	 * @param mixed[] $innerjoin_in
 	 * @param mixed[] $leftjoin_in
+	 * @parameter int|string $limit (Optional) limit the returned rows by a number or span (i.e. 5 or 2,5). In a span, the first number is the starting row, the second is the numbver of rows to return.
 	 *
 	 * @return string|bool Returns the formatted query or false if there is a problem with the passed parameters.
 	 *
 	 */
-	public static function formatSelectQuery($columns, $table_in, $where_in = NULL, $orderby_in = NULL, $innerjoin_in = NULL, $leftjoin_in = NULL) {
+	public static function formatSelectQuery($columns, $table_in, $where_in = NULL, $orderby_in = NULL, $innerjoin_in = NULL, $leftjoin_in = NULL, $limit=NULL) {
 		if ((!$columns) || (!$table_in)) return false;
 		
 		// table
@@ -197,8 +198,11 @@ class MsDb
 		
 		$leftjoin = '';
 		if (($leftjoin_in) && (is_array($leftjoin_in))) $leftjoin = ' LEFT JOIN ' . implode(' LEFT JOIN ', $leftjoin_in);
+		
+		if ($limit != NULL) $limit = ' LIMIT ' . $limit;
+			else $limit = '';
 			
-		return trim('SELECT ' . $columns . ' FROM ' . $table . $innerjoin . $leftjoin . $where . $orderby);
+		return trim('SELECT ' . $columns . ' FROM ' . $table . $innerjoin . $leftjoin . $where . $orderby . $limit);
 	}
 	
 	

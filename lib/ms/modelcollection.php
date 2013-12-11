@@ -38,13 +38,13 @@ class MsModelCollection implements Iterator, Countable {
 	 * 
 	 * Loads this collection with models based on criteria. Optionally sorted by orderby criteria(ion).
 	 * 
-	 * @parameter mixed[] $where (Optional) associative array of where criteria i.e.: array('id' => array('123', '=')) or: array('name' => array('%john%', 'like')) or: array('id' => array('50', '<')).
-	 * @parameter string[] $orderby (Optional) one or more columns to sort on. i.e.: array('last', 'first') or: array('id').
-	 *
+	 * @parameter 	mixed[] 		$where (Optional) associative array of where criteria i.e.: array('id' => array('123', '=')) or: array('name' => array('%john%', 'like')) or: array('id' => array('50', '<')).
+	 * @parameter 	string[] 		$orderby (Optional) one or more columns to sort on. i.e.: array('last', 'first') or: array('id').
+	 * @parameter 	int|string		$limit (Optional) limit the returned rows by a number or span (i.e. 5 or 2,5). In a span, the first number is the starting row, the second is the numbver of rows to return.
 	 * @return void
 	 *
 	 */
-	 public function load($where, $orderby=NULL) {
+	 public function load($where, $orderby=NULL, $limit=NULL) {
 		// make sure class file has been included before we instantiate
 		$classNameArray = MsUtils::camelcaseToArray($this->classname);
 		$path = MS_PATH_BASE . DS . 'lib' . DS . strtolower($classNameArray[0]) . DS . strtolower($classNameArray[1]) . '.php';
@@ -53,7 +53,7 @@ class MsModelCollection implements Iterator, Countable {
 		 eval('$model = new ' . $this->classname . '($this->config, $this->db);');
 		 if (is_object($model)) {
 			// perform query and load results as model instances
-			$query = MsDb::formatSelectQuery($model->columns, $model->dbTable, $where, $orderby);
+			$query = MsDb::formatSelectQuery($model->columns, $model->dbTable, $where, $orderby, NULL, NULL, $limit);
 		 	if ($result = $this->db->query($query)) {
 		 		foreach ($result as $this_row) {
 		 			$model->setColumnValues($this_row);
@@ -81,11 +81,12 @@ class MsModelCollection implements Iterator, Countable {
 	 * @parameter string[] $linkTableConditions (Optional) Array of linktable columns that must be a particular value. i.e. array('folder_id' => '4').
 	 * @parameter string[] $modelTableConditions (Optional) Array of model table columns that must be a particular value. i.e. array('owner_id' => '1234').
 	 * @parameter string[] $orderby (Optional) one or more columns to sort on. i.e.: array('last', 'first') or: array('id').
+	 * @parameter 	int|string		$limit (Optional) limit the returned rows by a number or span (i.e. 5 or 2,5). In a span, the first number is the starting row, the second is the numbver of rows to return.
 	 *
 	 * @return void
 	 *
 	 */
-	 public function loadFromLinkTable($linkTableName, $keys, $linkTableConditions='', $modelTableConditions='', $orderby=NULL) {
+	 public function loadFromLinkTable($linkTableName, $keys, $linkTableConditions='', $modelTableConditions='', $orderby=NULL, $limit=NULL) {
 		 // make sure class file has been included before we instantiate
 		$classNameArray = MsUtils::camelcaseToArray($this->classname);
 		$path = MS_PATH_BASE . DS . 'lib' . DS . strtolower($classNameArray[0]) . DS . strtolower($classNameArray[1]) . '.php';
@@ -130,7 +131,7 @@ class MsModelCollection implements Iterator, Countable {
 			}
 		 
 		 	// perform query and load results as model instances
-		 	$query = MsDb::formatSelectQuery($columns, $tables, $where, $orderby);
+		 	$query = MsDb::formatSelectQuery($columns, $tables, $where, $orderby, NULL, NULL, $limit);
 
 			if ($result = $this->db->query($query)) {
 		 		foreach ($result as $this_row) {
@@ -170,9 +171,9 @@ class MsModelCollection implements Iterator, Countable {
 	 
 	 
 	/**
-	 * Remove Model
+	 * Remove Model.
 	 * 
-	 * Removes a model from this collection
+	 * Removes a model from this collection.
 	 * 
 	 * @parameter model MsModel
 	 *
@@ -240,6 +241,39 @@ class MsModelCollection implements Iterator, Countable {
 	 }
 	 
 	 
+	 /**
+	  * Subset.
+	  *
+	  * Returns a subset of this collection as a new MsCollection.
+	  *
+	  * @param int	$offset		Sequence number of the first model to return in the subset.  
+	  * @param int 	$numModels	Total number of models to return in the subset.
+	  *
+	  * @return MsModelCollection
+	  */
+	 public function subset($offset, $numModels) {
+		 $newCollection = new MsModelCollection($this->classname, $this->config, $this->db);
+		 $newCollection->addModel(array_slice($this->models, $offset, $numModels));
+		 return $newCollection;
+	 }
+	 
+	 
+	 /**
+	  * Merge.
+	  *
+	  * Returns this collection's models merged with those of another, as a new MsCollection.
+	  *
+	  * @param	MsCollection	$otherCollection
+	  *
+	  * @return MsModelCollection
+	  */
+	 public function merge($otherCollection) {
+		 $newCollection = new MsModelCollection($this->classname, $this->config, $this->db);
+		 $newCollection->addModel($this->models);
+		 $newCollection->addModel($otherCollection->toArray());
+		 
+		 return $newCollection; 
+	 }
 	 
 	 
 	 
