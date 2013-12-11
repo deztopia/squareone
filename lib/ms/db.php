@@ -268,7 +268,7 @@ class MsDbResult implements Iterator
 	 * @param mysqli_ result|mysql_result $result_in
 	 */
 	function __construct($result_in) {
-		if ($result_in) {
+		if (is_object($result_in)) {
 			$this->resultSet = array();
 			if (class_exists('mysqli')) {
 				// Default: Use MySQLi
