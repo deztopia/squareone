@@ -268,18 +268,19 @@ class MsDbResult implements Iterator
 	 * @param mysqli_ result|mysql_result $result_in
 	 */
 	function __construct($result_in) {
-		if (is_object($result_in)) {
-			$this->resultSet = array();
-			if (class_exists('mysqli')) {
-				// Default: Use MySQLi
+		$this->resultSet = array();
+		if (class_exists('mysqli')) {
+			// Default: Use MySQLi
+			if (is_object($result_in)) {
 				while ($row = $result_in->fetch_assoc()) $this->resultSet[] = $row;
-				$result_in->free(); // free memory associated with this result			
-	
-			} else {
-				// Last resort: Use MySQL
+				$result_in->free(); // free memory associated with this result
+			}
+		} else {
+			// Last resort: Use MySQL
+			if ($result_in) {
 				while ($row = mysql_fetch_assoc($result_in)) $this->resultSet[] = $row;
-				mysql_free_result($result_in); // free memory associated with this result		
-			}	
+				mysql_free_result($result_in); // free memory associated with this result
+			}
 		}
 	}
 	
