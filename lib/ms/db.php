@@ -101,7 +101,7 @@ class MsDb
 		if (class_exists('mysqli')) {
 			// Default: Use MySQLi
 			$this->connection->query($sql);
-			return $mysqli->insert_id;
+			return $this->connection->insert_id;
 		} else {
 			// Last resort: Use MySQL
 			$sql = stripslashes($sql);
