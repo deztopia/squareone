@@ -204,11 +204,12 @@ abstract class MsModel {
 			
 			// reset change tracker
 			$this->unchanged();
-			
+/*			
 		$trace = debug_backtrace();
 				trigger_error(
 					'Saving to ' . $this->dbTable . '...',
 					E_USER_NOTICE);
+*/
 		}
 	}
 	
