@@ -418,12 +418,30 @@ abstract class MsModel {
 	/**
 	  * Delete.
 	  *
-	  * Deletes this model's database entry.
+	  * Should be overridden in child classes for whenever this model is called to be deleted. Recommended to 
+	  * set a "deleted" flag for the model and all dependencies, for example, rather than physically removing them
+	  * from the database.
+	  *
+	  * @return void
+	  *
+	  */
+	public function delete()
+	{
+		// Add your code to flag for delete here. For example:
+		// $this->setValue('is_deleted', '1');
+		// $this->setValue('date_deleted', date('Y-m-d'));
+	}
+	
+	
+	/**
+	  * Purge.
+	  *
+	  * Removes this model's database entry.
 	  *
 	  * @return bool
 	  *
 	  */
-	public function delete()
+	public function purge()
 	{
 		if ($this->isValid()) {
 			if (!is_array($this->pk)) return false; // if a primary key isn't specified, we can't delete
