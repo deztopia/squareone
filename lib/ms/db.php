@@ -62,8 +62,6 @@ class MsDb
 			return new MsDbResult($this->connection->query($query));
 		} else {
 			// Last resort: Use MySQL
-			$query = stripslashes($query);
-			mysql_escape_string($query);
 			return new MsDbResult(mysql_query($query));
 		}
 	}
@@ -90,7 +88,7 @@ class MsDb
 			if ($columns != '') $columns .= ',';
 			if ($values != '') $values .= ',';
 			$columns .= $column;
-			$values .= '\'' . $val . '\'';
+			$values .= '\'' . $this->escape($val) . '\'';
 		}
 		
 		if ($allowOverwrite) $sql = 'REPLACE INTO ';
@@ -104,8 +102,6 @@ class MsDb
 			return $this->connection->insert_id;
 		} else {
 			// Last resort: Use MySQL
-			$sql = stripslashes($sql);
-			mysql_escape_string($sql);
 			mysql_query($sql);
 			return mysql_insert_id();
 		}
@@ -162,7 +158,7 @@ class MsDb
 	 * @return string|bool Returns the formatted query or false if there is a problem with the passed parameters.
 	 *
 	 */
-	public static function formatSelectQuery($columns, $table_in, $where_in = NULL, $orderby_in = NULL, $innerjoin_in = NULL, $leftjoin_in = NULL, $limit=NULL) {
+	public function formatSelectQuery($columns, $table_in, $where_in = NULL, $orderby_in = NULL, $innerjoin_in = NULL, $leftjoin_in = NULL, $limit=NULL) {
 		if ((!$columns) || (!$table_in)) return false;
 		
 		// table
@@ -185,7 +181,7 @@ class MsDb
 					else $conj = 'AND';
 				if ($where != '') $where .= ' ' . $conj . ' ';
 					else $where = ' WHERE ';
-				if ($where_details['value'] !== NULL) $where .= trim($this_column) . ' ' . trim($where_details['operator']) . ' \'' . trim($where_details['value']) . '\'';
+				if ($where_details['value'] !== NULL) $where .= trim($this_column) . ' ' . trim($where_details['operator']) . ' \'' . $this->escape($where_details['value']) . '\'';
 					else $where .= trim($this_column) . ' ' . trim($where_details['operator']) . ' ' . trim($where_details['column']);
 			}
 		}
@@ -234,7 +230,7 @@ class MsDb
 					else $conj = 'AND';
 				if ($where != '') $where .= ' ' . $conj . ' ';
 					else $where = ' WHERE ';
-				if ($where_details['value'] !== NULL) $where .= trim($this_column) . ' ' . trim($where_details['operator']) . ' \'' . trim($where_details['value']) . '\'';
+				if ($where_details['value'] !== NULL) $where .= trim($this_column) . ' ' . trim($where_details['operator']) . ' \'' . $this->escape($where_details['value']) . '\'';
 					else $where .= trim($this_column) . ' ' . trim($where_details['operator']) . ' ' . trim($where_details['column']);
 			}
 		}
@@ -245,6 +241,68 @@ class MsDb
 		
 		// format query
 		return trim('DELETE FROM ' . $table . $where . $limit);
+	}
+	
+
+	
+	/**
+	 * Format Update Query.
+	 *
+	 * Generates a MySQL UPDATE query.
+	 *
+	 * @param string $table Table name.
+	 * @param mixed[] $where_in (Optional) Associative array of where criteria i.e.: array('id' => array('value' => '123', 'operator' => '=')) or: array('name' => array('value' => '%john%', 'operator' => 'like', 'conj' => 'OR')).
+	 * @param mixed[] $values Associative array where keys are column names and values are the values to set those column(s) to.
+	 *
+	 * @return string|bool Returns the formatted query or false if there is a problem with the passed parameters.
+	 *
+	 */
+	public function formatUpdateQuery($table, $where_in = NULL, $values) {
+		if ($table == '') return false;
+		if ((!is_array($values)) || (sizeof($values) < 1)) return false;
+		
+		$where = '';
+		if (($where_in) && (is_array($where_in))) {
+			foreach ($where_in as $this_column => $where_details) {
+				if (array_key_exists('conj', $where_details)) $conj = $where_details['conj'];
+					else $conj = 'AND';
+				if ($where != '') $where .= ' ' . $conj . ' ';
+					else $where = ' WHERE ';
+				if ($where_details['value'] !== NULL) $where .= trim($this_column) . ' ' . trim($where_details['operator']) . ' \'' . $this->escape($where_details['value']) . '\'';
+					else $where .= trim($this_column) . ' ' . trim($where_details['operator']) . ' ' . trim($where_details['column']);
+			}
+		}
+		
+		$valueString = '';
+		foreach ($values as $column => $val) {
+			if ($valueString != '') $valueString .= ',';
+			$valueString .= $column . '=' . "'" . $this->escape($val) . "'";
+		}
+		
+		return trim('UPDATE ' . $table . ' SET ' . $valueString . ' ' . $where);
+	}
+	
+	
+	/**
+	 * Escape String.
+	 *
+	 * Handles escaping a string from user input before inserting into a database.
+	 * 
+	 * @param string $string The user input.
+	 *
+	 * @return string
+	 */
+	protected function escape($string) {
+		$string = trim(stripslashes($string));	
+		
+		if (class_exists('mysqli')) {
+			// Default: Use MySQLi
+			return $this->connection->real_escape_string($string);
+		} else {
+			// Last resort: Use MySQL
+			return mysql_real_escape_string($string);
+		}
+		
 	}
 }
 

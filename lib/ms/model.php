@@ -103,7 +103,7 @@ abstract class MsModel {
 		if ($this->db->isConnected()) {
 			if ((sizeof($this->relationships) < 1) || (!$preload_relationships)) {
 				// no relationships
-				$query = MsDb::formatSelectQuery($this->columns, $this->dbTable, $where);
+				$query = $this->db->formatSelectQuery($this->columns, $this->dbTable, $where);
 			} else {
 				// if relationships exist, join tables for an efficient single-db query of all related models
 				$table = '';
@@ -136,7 +136,7 @@ abstract class MsModel {
 					}
 				}
 				
-				$query = MsDb::formatSelectQuery($columns, $table, NULL, NULL, $inner_join, $left_join);
+				$query = $this->db->formatSelectQuery($columns, $table, NULL, NULL, $inner_join, $left_join);
 			}
 			
 			/*
@@ -437,7 +437,7 @@ abstract class MsModel {
 	/**
 	  * Purge.
 	  *
-	  * Removes this model's database entry.
+	  * Deletes this model's database entry.
 	  *
 	  * @return bool
 	  *
@@ -454,13 +454,12 @@ abstract class MsModel {
 				$where[$keyName] = array('value' => $this->getValue($keyName), 'operator' => '=');
 			}	
 			
-			$query = MsDb::formatDeleteQuery($this->dbTable, $where);
+			$query = $this->db->formatDeleteQuery($this->dbTable, $where);
 			$result = $this->db->query($query);
 	
 			// clear any update flags, as we won't need to update a deleted model
 			$this->changedColumns = array();
 			
-			//TO-DO: Return true only if the appropriate number of rows were deleted
 			return true;
 		}
 	}

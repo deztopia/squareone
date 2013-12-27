@@ -53,7 +53,7 @@ class MsModelCollection implements Iterator, Countable {
 		 eval('$model = new ' . $this->classname . '($this->config, $this->db);');
 		 if (is_object($model)) {
 			// perform query and load results as model instances
-			$query = MsDb::formatSelectQuery($model->columns, $model->dbTable, $where, $orderby, NULL, NULL, $limit);
+			$query = $this->db->formatSelectQuery($model->columns, $model->dbTable, $where, $orderby, NULL, NULL, $limit);
 		 	if ($result = $this->db->query($query)) {
 		 		foreach ($result as $this_row) {
 		 			$model->setColumnValues($this_row);
@@ -131,7 +131,7 @@ class MsModelCollection implements Iterator, Countable {
 			}
 		 
 		 	// perform query and load results as model instances
-		 	$query = MsDb::formatSelectQuery($columns, $tables, $where, $orderby, NULL, NULL, $limit);
+		 	$query = $this->db->formatSelectQuery($columns, $tables, $where, $orderby, NULL, NULL, $limit);
 
 			if ($result = $this->db->query($query)) {
 		 		foreach ($result as $this_row) {
