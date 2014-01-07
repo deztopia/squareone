@@ -220,7 +220,7 @@ class MsModelCollection implements Iterator, Countable {
 		 if ($ignoreCase) $value = strtolower($value);
 		 if ($rebuildIndex) unset($this->findMap[$column]);
 		 
-		 if (!is_array($this->findMap[$column])) {
+		 if ((!array_key_exists($column, $this->findMap)) || (!is_array($this->findMap[$column]))) {
 			 // we haven't done this search yet, so  build an index for it. subsequent searches on the same column will use this index
 			 $index = array();
 			 foreach ($this as $this_model) {
@@ -229,14 +229,14 @@ class MsModelCollection implements Iterator, Countable {
 				 $key = trim($key);
 				 if ($ignoreCase) $key = strtolower($key);
 				 
-				 if (!is_array($index[$key])) $index[$key] = array();
+				 if ((!array_key_exists($key, $index)) || (!is_array($index[$key]))) $index[$key] = array();
 				 $index[$key][] = $this_model;
 			 }
 			 
 			 $this->findMap[$column] = $index;
 		}
 		
-		if (is_array($this->findMap[$column][$value]) && (is_object(current($this->findMap[$column][$value])))) return $this->findMap[$column][$value];
+		if ((array_key_exists($column, $this->findMap)) && (array_key_exists($value, $this->findMap[$column])) && (is_array($this->findMap[$column][$value]) && (is_object(current($this->findMap[$column][$value]))))) return $this->findMap[$column][$value];
 			else return array();
 	 }
 	 
