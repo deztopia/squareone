@@ -111,7 +111,7 @@ abstract class MsModel {
 				$left_join = array();
 				$joinwhere = '';
 				foreach ($where as $this_column => $where_array) {
-					if ($where_array['conj']) $conj = $where_array['conj']; else $conj = 'AND';
+					if (array_key_exists('conj', $where_array)) $conj = $where_array['conj']; else $conj = 'AND';
 					$joinwhere .= ' ' . $conj . ' ' . $this->dbTable . '.' . $this_column . $where_array['operator'] . '\'' . $where_array['value'] . '\'';
 				}
 				if (is_array($this->columns)) $columns = $this->columns;
@@ -321,8 +321,7 @@ abstract class MsModel {
 		
 		$this->relationships[$label] = array(
 			'model' => $relatedModel,
-			'column_map' => $column_map,
-			'foreign_column' => $foreignColumn
+			'column_map' => $column_map
 		);
 	}
 	
