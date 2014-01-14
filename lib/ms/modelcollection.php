@@ -71,7 +71,7 @@ class MsModelCollection implements Iterator, Countable {
 	 }
 	 
 	 
-	 /**
+	/**
 	 * Load From Link Table.
 	 * 
 	 * Loads this collection with models based on references in a link table.
@@ -80,7 +80,8 @@ class MsModelCollection implements Iterator, Countable {
 	 * @parameter string[] $keys Maps columns from the linktable to the model table. Keys are linktable columns, values are model table columns. i.e. array('model_id' => 'id').
 	 * @parameter string[] $linkTableConditions (Optional) Array of linktable columns that must be a particular value. i.e. array('folder_id' => '4').
 	 * @parameter string[] $modelTableConditions (Optional) Array of model table columns that must be a particular value. i.e. array('owner_id' => '1234').
-	 * @parameter string[] $orderby (Optional) one or more columns to sort on. i.e.: array('last', 'first') or: array('id').
+	 * @parameter string[] $orderby (Optional) one or more columns to sort on. i.e.: array('last', 'first') or: array('id'). The table can be specified as
+	 *								either "modeltable" or "linktable". i.e.: array('modeltable.first_name'). By default, the linktable is assumed.
 	 * @parameter 	int|string		$limit (Optional) limit the returned rows by a number or span (i.e. 5 or 2,5). In a span, the first number is the starting row, the second is the numbver of rows to return.
 	 *
 	 * @return void
@@ -116,18 +117,22 @@ class MsModelCollection implements Iterator, Countable {
 			
 			if (is_array($linkTableConditions)) {
 			foreach ($linkTableConditions as $linktable_column => $value)
-				$where['linktable.' . $linktable_column] = array('value' => $value, 'operator' => '=');
+				if (is_array($value)) $where['linktable.' . $linktable_column] = array('value' => $value['value'], 'operator' => $value['operator']);
+					else $where['linktable.' . $linktable_column] = array('value' => $value, 'operator' => '=');
 			}
 			
 			if (is_array($modelTableConditions)) {
 			foreach ($modelTableConditions as $modeltable_column => $value)
-				$where['modeltable.' . $modeltable_column] = array('value' => $value, 'operator' => '='); 
+				if (is_array($value)) $where['modeltable.' . $modeltable_column] = array('value' => $value['value'], 'operator' => $value['operator']);
+					else $where['modeltable.' . $modeltable_column] = array('value' => $value, 'operator' => '='); 
 			}
 			
 			// assign orderby column to linktable
 			if (is_array($orderby)) {
-				foreach ($orderby as &$value)
-   					$value = 'linktable.' . $value;
+				foreach ($orderby as &$value) {
+   					if (strpos($value, '.') === false)
+						$value = 'linktable.' . $value;
+				}
 			}
 		 
 		 	// perform query and load results as model instances
