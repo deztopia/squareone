@@ -80,10 +80,15 @@ $action = strtolower(str_replace('-', '', $action)); // determine action
 define('MS_ACTION', $action );
 
 if (!method_exists($controllerObject, $action . 'Action')) {
-	require_once ( MS_PATH_BASE . DS .'controllers'. DS . MS_MODULE . DS . 'notfound.php' );
-	eval('$controllerObject = new NotfoundController($ms_config, $params);');
-	$controller = 'notfound';
-	$action = 'noaction';
+	if (method_exists($controllerObject, '__Action')) {
+		// controller has an optional catch action
+		$action = '__';	
+	} else {
+		require_once ( MS_PATH_BASE . DS .'controllers'. DS . MS_MODULE . DS . 'notfound.php' );
+		eval('$controllerObject = new NotfoundController($ms_config, $params);');
+		$controller = 'notfound';
+		$action = 'noaction';
+	}
 }
 $actionMethod = $action . 'Action';
 
