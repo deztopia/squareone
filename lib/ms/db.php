@@ -349,7 +349,7 @@ class MsDbResult implements Iterator
 	 * @return bool True if this is a valid (successful) result, otherwise false.
 	 */
 	public function isValid() {
-		return is_array($this->resultSet);
+		return is_array(current($this->resultSet));
 	}
 	
 	
@@ -360,7 +360,7 @@ class MsDbResult implements Iterator
 	 */
 	function fetch_assoc() {
 		if ($this->isValid()) return current($this->resultSet);
-			else return false;
+			else return array();
 	}
 	
 	

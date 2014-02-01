@@ -146,7 +146,8 @@ abstract class MsModel {
 					E_USER_NOTICE);
 			*/
 	
-			if ($result = $this->db->query($query)) {
+			$result = $this->db->query($query);
+			if ($result->isValid()) {
 				if ((sizeof($this->relationships) < 1) || (!$preload_relationships)) {
 					// no relationships
 					$this->columnValues = $result->fetch_assoc();
