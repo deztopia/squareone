@@ -316,6 +316,7 @@ class MsView {
 
 		// if the response type is JSON, just return the json encoding of the values. No viewscript is needed
 		if ($this->responseType == 'json') {
+			header('Content-type: application/json; charset=UTF-8');
 			if (isset($this->jsoncallback)) return $this->jsoncallback . '(' . json_encode($this->values) . ');'; // JSONP response
 				else return json_encode($this->values);
 		}

@@ -16,6 +16,7 @@ require_once ( 'config.php' );
 define('MS_PATH_BASE', dirname(__FILE__) ); // i.e. /var/www/myapp
 define('MS_URL_BASE', 'http://' . $_SERVER["SERVER_NAME"]); // i.e. http://myapp.com
 define('DS', DIRECTORY_SEPARATOR );
+array_key_exists('CONTENT_TYPE', $_SERVER) ? define('MS_CONTENT_TYPE', $_SERVER['CONTENT_TYPE']) : define('MS_CONTENT_TYPE', '');
 // MS_MODULE defined later
 // MS_CONTROLLER defined later
 // MS_ACTION defined later
@@ -53,6 +54,12 @@ if ($ms_config['addCookiesToParams']) {
 		$params[$key] = $val;	
 	}
 }
+// JSON in the RAW POST data?
+if (MS_CONTENT_TYPE == 'application/json') {
+	$jsonRequest = json_decode(file_get_contents('php://input'));
+	if ($jsonRequest !== NULL) foreach ($jsonRequest as $key => $val) $params[$key] = $val;
+}
+
 
 $params['domain'] = str_replace('www.', '', $_SERVER['HTTP_HOST']);	// Remove 'www' from domain i.e. mysite.com, or m.mysite.com instead of www.mysite.com or www.m.mysite.com
 
