@@ -17,7 +17,7 @@ define('MS_PATH_BASE', dirname(__FILE__) ); // i.e. /var/www/myapp
 define('MS_URL_BASE', 'http://' . $_SERVER["SERVER_NAME"]); // i.e. http://myapp.com
 define('DS', DIRECTORY_SEPARATOR );
 array_key_exists('CONTENT_TYPE', $_SERVER) ? define('MS_CONTENT_TYPE', $_SERVER['CONTENT_TYPE']) : define('MS_CONTENT_TYPE', '');
-if (isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != "")  define('MS_PROTOCOL', 'https'); else define('MS_PROTOCOL', 'http');
+if (array_key_exists('HTTPS', $_SERVER) && $_SERVER['HTTPS'] != "")  define('MS_PROTOCOL', 'https'); else define('MS_PROTOCOL', 'http');
 // MS_MODULE defined later
 // MS_CONTROLLER defined later
 // MS_ACTION defined later
