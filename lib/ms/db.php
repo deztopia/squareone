@@ -335,7 +335,7 @@ class MsDbResult implements Iterator
 			}
 		} else {
 			// Last resort: Use MySQL
-			if ($result_in) {
+			if (is_resource($result_in)) {
 				while ($row = mysql_fetch_assoc($result_in)) $this->resultSet[] = $row;
 				mysql_free_result($result_in); // free memory associated with this result
 			}
