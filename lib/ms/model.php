@@ -338,20 +338,22 @@ abstract class MsModel {
 	  */
 	public function getRelationship($label)
 	{
-		if (is_object($this->relationships[$label]['model'])) { 
-			if ($this->relationships[$label]['model']->isValid()) { // related model is preloaded
-				return $this->relationships[$label]['model'];
-			} else {
-				$relationship_where = array();
-				foreach ($this->relationships[$label]['column_map'] as $local_column => $foreign_column)
-					if (array_key_exists($local_column, $this->columnValues)) $relationship_where[$foreign_column] = array('value' => $this->columnValues[$local_column], 'operator' => '=');
-					else $relationship_where[$foreign_column] = array('value' => $local_column, 'operator' => '='); // if not in columns, just use the passed column name as the value itself
-					
-
-				// load related model
-				$this->relationships[$label]['model']->identify($relationship_where);
-				// return related model if it properly loaded
-				if ($this->relationships[$label]['model']->isValid()) return $this->relationships[$label]['model'];
+		if ($this->isValid()) {
+			if (is_object($this->relationships[$label]['model'])) { 
+				if ($this->relationships[$label]['model']->isValid()) { // related model is preloaded
+					return $this->relationships[$label]['model'];
+				} else {
+					$relationship_where = array();
+					foreach ($this->relationships[$label]['column_map'] as $local_column => $foreign_column)
+						if (array_key_exists($local_column, $this->columnValues)) $relationship_where[$foreign_column] = array('value' => $this->columnValues[$local_column], 'operator' => '=');
+						else $relationship_where[$foreign_column] = array('value' => $local_column, 'operator' => '='); // if not in columns, just use the passed column name as the value itself
+						
+	
+					// load related model
+					$this->relationships[$label]['model']->identify($relationship_where);
+					// return related model if it properly loaded
+					if ($this->relationships[$label]['model']->isValid()) return $this->relationships[$label]['model'];
+				}
 			}
 		}
 		return NULL;
