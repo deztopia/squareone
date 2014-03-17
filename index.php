@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Momentable Framework Bootstrap & Router.
+ * Mediasoft SquareOne Framework Bootstrap & Router.
  *
  * @copyright  Copyright (C) 2013 Mediasoft Technologies, Inc., All Rights Reserved.
  * @author     Jason Melendez.

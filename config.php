@@ -1,9 +1,10 @@
 <?php
 /** 
- * Config values for Momentable Framework
+ * Config values for Mediasoft SquareOne Framework
  *
- * Copyright (c) 2013 Mediasoft Technologies, Inc. All Rights Reserved
- * Author: Jason Melendez
+ * @copyright  Copyright (C) 2013 Mediasoft Technologies, Inc., All Rights Reserved.
+ * @author     Jason Melendez.
+ * @link       http://www.mediasofttechnologies.com.
  *
  */
  
