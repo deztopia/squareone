@@ -119,16 +119,16 @@ class MsView {
 	 *
 	 */
 	public function setLanguage($langCode) {
-		if (!file_exists( MS_PATH_BASE . DS . 'assets' . DS . 'languages' . DS . $langCode . '.php' )) $langCode = 'en';
+		if (!file_exists( MS_PATH_BASE . DS . 'webroot' . DS . 'assets' . DS . 'languages' . DS . $langCode . '.php' )) $langCode = 'en';
 	
 		// include language file
-		include(MS_PATH_BASE . DS . 'assets' . DS . 'languages' . DS . $langCode . '.php');
+		include(MS_PATH_BASE . DS . 'webroot' . DS . 'assets' . DS . 'languages' . DS . $langCode . '.php');
 		$this->langValues = $langValues;
 		$this->lang = $langCode;
 		
 		// include controller-specific language file, if exists
-		if (file_exists( MS_PATH_BASE . DS . 'assets' . DS . 'languages' . DS . $langCode . '_' . MS_MODULE . '_' . $this->controllerName . '.php' ))
-			include(MS_PATH_BASE . DS . 'assets' . DS . 'languages' . DS . $langCode . '_' . MS_MODULE . '_' . $this->controllerName . '.php');
+		if (file_exists( MS_PATH_BASE . DS . 'webroot' . DS . 'assets' . DS . 'languages' . DS . $langCode . '_' . MS_MODULE . '_' . $this->controllerName . '.php' ))
+			include(MS_PATH_BASE . DS . 'webroot' . DS . 'assets' . DS . 'languages' . DS . $langCode . '_' . MS_MODULE . '_' . $this->controllerName . '.php');
 			
 		if ((isset($controllerLangValues)) && (is_array($controllerLangValues))) $this->langValues = array_merge($langValues, $controllerLangValues);
 			else $this->langValues = $langValues;
@@ -193,7 +193,7 @@ class MsView {
 	 *
 	 */
 	public function addStylesheet($styleFilename) {
-		if (file_exists(MS_PATH_BASE . DS . 'assets' . DS . 'css' . DS . $styleFilename)) {
+		if (file_exists(MS_PATH_BASE . DS . 'webroot' . DS . 'assets' . DS . 'css' . DS . $styleFilename)) {
 			if (!in_array('/assets/css/' . $styleFilename, $this->cssIncludes)) $this->cssIncludes[] = '/assets/css/' . $styleFilename;
 		} else {
 			if (strpos($styleFilename, 'http://') !== false) {
@@ -220,7 +220,7 @@ class MsView {
 	 *
 	 */
 	public function addScriptInclude($scriptName) {
-		if (file_exists(MS_PATH_BASE . DS . 'assets' . DS . 'js' . DS . $scriptName)) {
+		if (file_exists(MS_PATH_BASE . DS . 'webroot' . DS . 'assets' . DS . 'js' . DS . $scriptName)) {
 			if (!in_array('/assets/js/' . $scriptName, $this->scriptIncludes)) $this->scriptIncludes[] = '/assets/js/' . $scriptName;
 		}
 	}

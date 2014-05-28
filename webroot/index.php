@@ -13,7 +13,7 @@
 require_once ( 'config.php' );
 
 // constants
-define('MS_PATH_BASE', dirname(__FILE__) ); // i.e. /var/www/myapp
+define('MS_PATH_BASE', str_replace('/webroot', '', dirname(__FILE__))); // i.e. /var/www/myapp
 define('MS_URL_BASE', 'http://' . $_SERVER["SERVER_NAME"]); // i.e. http://myapp.com
 define('DS', DIRECTORY_SEPARATOR );
 array_key_exists('CONTENT_TYPE', $_SERVER) ? define('MS_CONTENT_TYPE', $_SERVER['CONTENT_TYPE']) : define('MS_CONTENT_TYPE', '');
